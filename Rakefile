@@ -1,5 +1,7 @@
 task :test do
-  cd "test/"
-  sh "cmake ."
+  ENV["PATH"] = "#{__dir__}/bin:#{ENV["PATH"]}"
+
+  cd "test/core-test"
+  sh "cmake -DEDITORCONFIG_CMD=editorconfig ."
   sh "ctest ."
 end
