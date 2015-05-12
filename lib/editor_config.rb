@@ -38,13 +38,14 @@ module EditorConfig
       raise ArgumentError, "editorconfig syntax must be valid UTF-8"
     end
 
+    root = false
     out_hash = {}
     last_section = nil
 
     buffer.each_line do |line|
       case line
       when /\Aroot(\s+)?\=(\s+)?true\Z/
-        out_hash["root"] = true
+        root = true
       when /\A\[(?<name>[\/\{\},\*\.[:word:]]+)\]\Z/
         # section marker
         last_section = Regexp.last_match[:name]
@@ -61,7 +62,7 @@ module EditorConfig
       end
     end
 
-    out_hash
+    return out_hash, root
   end
 
   def self.cast(name, value)
@@ -159,7 +160,7 @@ module EditorConfig
       data = yield subpath.to_s
       next unless data
 
-      ini = parse(data)
+      ini, root = parse(data)
 
       ini.each do |pattern, properties|
         if fnmatch?(pattern, path)
@@ -167,7 +168,7 @@ module EditorConfig
         end
       end
 
-      if ini["root"] == true
+      if root
         break
       end
     end
