@@ -1,0 +1,13 @@
+root = true
+
+[test1]
+indent_size = tab
+
+[test2]
+indent_size = 4
+
+[test3]
+indent_size = 0
+
+[test4]
+indent_size = space

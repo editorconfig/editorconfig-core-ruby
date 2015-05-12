@@ -1,0 +1,13 @@
+root = true
+
+[test1]
+end_of_line = lf
+
+[test2]
+end_of_line = crlf
+
+[test3]
+end_of_line = cr
+
+[test4]
+end_of_line = CRLF

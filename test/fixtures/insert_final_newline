@@ -1,0 +1,13 @@
+root = true
+
+[test1]
+insert_final_newline = true
+
+[test2]
+insert_final_newline = false
+
+[test3]
+insert_final_newline = TRUE
+
+[test4]
+insert_final_newline = nil
