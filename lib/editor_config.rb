@@ -41,7 +41,7 @@ module EditorConfig
 
   # Public: Parse a `.editorconfig` from a string.
   #
-  # buffer - a String containing the contents of a `.editorconfig` file.
+  # io - a String containing the contents of a `.editorconfig` file.
   #
   # Returns a hash of sections from the config file. Each section will be a
   # hash of key/value pairs for that section. The only top-level key that
@@ -70,16 +70,16 @@ module EditorConfig
   #     "charset" => "utf-8"
   #   }
   # }
-  def self.parse(buffer)
-    if !buffer.force_encoding("UTF-8").valid_encoding?
-      raise ArgumentError, "editorconfig syntax must be valid UTF-8"
-    end
+  def self.parse(io)
+    # if !io.force_encoding("UTF-8").valid_encoding?
+    #   raise ArgumentError, "editorconfig syntax must be valid UTF-8"
+    # end
 
     root = false
     out_hash = {}
     last_section = nil
 
-    buffer.each_line do |line|
+    io.each_line do |line|
       case line
       when /\Aroot(\s+)?\=(\s+)?true\Z/
         root = true
