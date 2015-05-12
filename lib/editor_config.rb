@@ -88,13 +88,13 @@ module EditorConfig
         last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
         out_hash[last_section] = {}
       when /\A(?<name>[[:word:]]+)(\s+)?\=(\s+)?(?<value>.+)\Z/
-        # name=value pair
         match = Regexp.last_match
+        name, value = match[:name][0, MAX_PROPERTY_NAME], match[:value]
 
         if last_section
-          out_hash[last_section][match[:name]] = match[:value]
+          out_hash[last_section][name] = value
         else
-          out_hash[match[:name]] = match[:value]
+          out_hash[name] = value
         end
       end
     end
