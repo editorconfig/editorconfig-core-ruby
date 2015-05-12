@@ -1,0 +1,1 @@
+require "editor_config"

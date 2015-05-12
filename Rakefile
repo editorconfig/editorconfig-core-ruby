@@ -9,6 +9,7 @@ namespace :test do
 
   task :integration => "test/core-test/.git" do
     ENV["PATH"] = "#{__dir__}/bin:#{ENV["PATH"]}"
+    ENV["RUBYLIB"] = "#{__dir__}/lib:#{ENV["RUBYLIB"]}"
 
     cd "test/core-test"
     sh "cmake -DEDITORCONFIG_CMD=editorconfig ."
