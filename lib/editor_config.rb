@@ -181,13 +181,14 @@ module EditorConfig
     config = {}
 
     Pathname.new(path).dirname.ascend do |subpath|
-      data = yield subpath.to_s
-      next unless data
+      config_path, config_data = yield subpath.to_s
+      next unless config_data
 
-      ini, root = parse(data)
+      ini, root = parse(config_data)
 
       ini.each do |pattern, properties|
-        if fnmatch?(pattern, path)
+        matcher = File.expand_path(pattern, config_path)
+        if fnmatch?(matcher, path)
           config = properties.merge(config)
         end
       end
@@ -203,7 +204,9 @@ module EditorConfig
   def self.fs_traverse(path, config: ".editorconfig")
     EditorConfig.traverse(path) do |p|
       config_path = File.join(p, config)
-      File.read(config_path) if File.exist?(config_path)
+      if File.exist?(config_path)
+        [File.dirname(File.expand_path(config_path)), File.read(config_path)]
+      end
     end
   end
 end
