@@ -21,10 +21,11 @@ module EditorConfig
   LF   = "lf".freeze
   CRLF = "crlf".freeze
 
-  LATIN1   = "latin1".freeze
-  UTF_16BE = "utf-16be".freeze
-  UTF_16LE = "utf-16le".freeze
-  UTF_8    = "utf-8".freeze
+  LATIN1    = "latin1".freeze
+  UTF_8     = "utf-8".freeze
+  UTF_8_BOM = "utf-8-bom".freeze
+  UTF_16BE  = "utf-16be".freeze
+  UTF_16LE  = "utf-16le".freeze
 
   # Public: Parse a `.editorconfig` from a string.
   #
@@ -89,85 +90,71 @@ module EditorConfig
     return out_hash, root
   end
 
-  def self.cast(name, value)
+  def self.preprocess(config)
+    h = {}
+    config.each do |key, value|
+      v = cast_property(key, value)
+      h[key] = v if !v.nil?
+    end
+    h
+  end
+
+  def self.cast_property(name, value)
     case name
-    when "indent_style" then cast_indent_style(value)
-    when "indent_size" then cast_indent_size(value)
-    when "tab_width" then cast_tab_width(value)
-    when "end_of_line" then cast_end_of_line(value)
-    when "charset" then cast_charset(value)
-    when "trim_trailing_whitespace" then cast_trim_trailing_whitespace(value)
-    when "insert_final_newline" then cast_insert_final_newline(value)
+    when INDENT_STYLE then cast_indent_style(value)
+    when INDENT_SIZE then cast_indent_size(value)
+    when TAB_WIDTH then cast_integer(value)
+    when END_OF_LINE then cast_eol(value)
+    when CHARSET then cast_charset(value)
+    when TRIM_TRAILING_WHITESPACE then cast_boolean(value)
+    when INSERT_FINAL_NEWLINE then cast_boolean(value)
+    when MAX_LINE_LENGTH then cast_integer(value)
     end
   end
 
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#indent_style
   def self.cast_indent_style(value)
     case value.to_s.downcase
-    when "tab" then :tab
-    when "space" then :space
-    else nil
+    when TAB then TAB
+    when SPACE then SPACE
     end
   end
 
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#indent_size
   def self.cast_indent_size(value)
-    value = value.to_s.downcase
-    if value == "tab"
-      :tab
-    elsif (value_int = value.to_i) && 0 < value_int && value_int < 64
-      value_int
-    else
-      nil
-    end
-  end
-
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#tab_width
-  def self.cast_tab_width(value)
-    if (value_int = value.to_i) && 0 < value_int && value_int < 64
-      value_int
-    else
-      nil
-    end
-  end
-
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#end_of_line
-  def self.cast_end_of_line(value)
     case value.to_s.downcase
-    when "lf" then :lf
-    when "cr" then :cr
-    when "crlf" then :crlf
-    else nil
+    when TAB then TAB
+    else cast_integer(value)
     end
   end
 
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#charset
+  def self.cast_integer(value)
+    value = value.to_i
+    if 0 < value && value < 4096
+      value
+    end
+  end
+
+  def self.cast_eol(value)
+    case value.to_s.downcase
+    when LF then LF
+    when CR then CR
+    when CRLF then CRLF
+    end
+  end
+
   def self.cast_charset(value)
     case value.to_s.downcase
-    when "latin1" then "latin1"
-    when "utf-8" then "utf-8"
-    when "utf-8-bom" then "utf-8-bom"
-    when "utf-16be" then "utf-16be"
-    when "utf-16le" then "utf-16le"
-    else nil
+    when LATIN1 then LATIN1
+    when UTF_8 then UTF_8
+    when UTF_8_BOM then UTF_8_BOM
+    when UTF_16BE then UTF_16BE
+    when UTF_16LE then UTF_16LE
     end
   end
 
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#trim_trailing_whitespace
-  def self.cast_trim_trailing_whitespace(value)
+  def self.cast_boolean(value)
     case value.to_s.downcase
-    when "true" then true
-    when "false" then false
-    else nil
-    end
-  end
-
-  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#insert_final_newline
-  def self.cast_insert_final_newline(value)
-    case value.to_s.downcase
-    when "true" then true
-    when "false" then false
-    else nil
+    when TRUE then true
+    when FALSE then false
     end
   end
 
