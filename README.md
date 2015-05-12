@@ -33,6 +33,32 @@ end_of_line=lf
 tab_width=8
 ```
 
+### Parse
+
+A low-level API for parsing an individual `.editorconfig` file.
+
+A `[config, root]` tuple is returned. The `root` bit is set if a top-level `root = true` is seen. The `config` value is a two dimensional hash mapping section names to property names and values.
+
+``` ruby
+data = File.read(".editorconfig")
+config, root = EditorConfig.parse(data)
+
+# root: if top-most root = true flag is set
+true
+
+# config: hash of sections and properties
+{
+  "*" => {
+    "end_of_line" => "lf",
+    "insert_final_newline" => "true"
+  },
+  "*.{js,py}" => {
+    "charset" => "utf-8"
+  }
+}
+```
+
+
 ## Testing
 
 [Cmake](http://www.cmake.org) is required to run the test suite. On OSX, just `brew install cmake`.
