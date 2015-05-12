@@ -37,6 +37,15 @@ class TestEditorConfig < MiniTest::Test
     ], EditorConfig.parse(fixture(:sample)))
   end
 
+  def test_parse_max_section_name
+    config, _ = EditorConfig.parse(fixture(:max_section_name))
+    assert_equal [
+      [100, 100],
+      [500, 500],
+      [500, 600]
+    ], config.map { |name, value| [name.bytesize, value["length"].to_i] }
+  end
+
   def test_preprocess_indent_style
     config, _ = EditorConfig.parse(fixture(:indent_style))
     assert_equal({ "indent_style" => "tab" },

@@ -85,7 +85,7 @@ module EditorConfig
         root = true
       when /\A\[(?<name>[\/\{\},\*\.[:word:]]+)\]\Z/
         # section marker
-        last_section = Regexp.last_match[:name]
+        last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
         out_hash[last_section] = {}
       when /\A(?<name>[[:word:]]+)(\s+)?\=(\s+)?(?<value>.+)\Z/
         # name=value pair
