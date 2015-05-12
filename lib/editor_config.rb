@@ -27,6 +27,18 @@ module EditorConfig
   UTF_16BE  = "utf-16be".freeze
   UTF_16LE  = "utf-16le".freeze
 
+  # Internal: Maximum number of bytes to read per line. Lines over this limit
+  # will be truncated.
+  MAX_LINE = 200
+
+  # Internal: Maximum byte length of section name Strings. Names over this limit
+  # will be truncated.
+  MAX_SECTION_NAME = 500
+
+  # Internal: Maximum byte length of property name String. Names over this limit
+  # will be truncated.
+  MAX_PROPERTY_NAME = 500
+
   # Public: Parse a `.editorconfig` from a string.
   #
   # buffer - a String containing the contents of a `.editorconfig` file.
