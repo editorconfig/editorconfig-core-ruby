@@ -171,8 +171,9 @@ module EditorConfig
   end
 
   def self.fnmatch?(pattern, path)
-    File.fnmatch?(pattern, path, File::FNM_EXTGLOB) ||
-      File.fnmatch?(pattern, File.basename(path), File::FNM_EXTGLOB)
+    flags = File::FNM_PATHNAME | File::FNM_EXTGLOB
+    File.fnmatch?(pattern, path, flags) ||
+      File.fnmatch?(pattern, File.basename(path), flags)
   end
 
   def self.traverse(path)
