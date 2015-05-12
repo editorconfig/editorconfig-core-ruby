@@ -2,6 +2,30 @@ require "editor_config/version"
 require "pathname"
 
 module EditorConfig
+  INDENT_STYLE             = "indent_style".freeze
+  INDENT_SIZE              = "indent_size".freeze
+  TAB_WIDTH                = "tab_width".freeze
+  END_OF_LINE              = "end_of_line".freeze
+  CHARSET                  = "charset".freeze
+  TRIM_TRAILING_WHITESPACE = "trim_trailing_whitespace".freeze
+  INSERT_FINAL_NEWLINE     = "insert_final_newline".freeze
+  MAX_LINE_LENGTH          = "max_line_length".freeze
+
+  TRUE  = "true".freeze
+  FALSE = "false".freeze
+
+  SPACE = "space".freeze
+  TAB   = "tab".freeze
+
+  CR   = "cr".freeze
+  LF   = "lf".freeze
+  CRLF = "crlf".freeze
+
+  LATIN1   = "latin1".freeze
+  UTF_16BE = "utf-16be".freeze
+  UTF_16LE = "utf-16le".freeze
+  UTF_8    = "utf-8".freeze
+
   # Public: Parse a `.editorconfig` from a string.
   #
   # buffer - a String containing the contents of a `.editorconfig` file.
