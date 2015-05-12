@@ -176,7 +176,7 @@ module EditorConfig
       File.fnmatch?(pattern, File.basename(path), flags)
   end
 
-  def self.traverse(path)
+  def self.load(path)
     path = File.join("/", path)
     config = {}
 
@@ -201,8 +201,8 @@ module EditorConfig
     config
   end
 
-  def self.fs_traverse(path, config: ".editorconfig")
-    EditorConfig.traverse(path) do |p|
+  def self.load_file(path, config: ".editorconfig")
+    EditorConfig.load(path) do |p|
       config_path = File.join(p, config)
       if File.exist?(config_path)
         [File.dirname(File.expand_path(config_path)), File.read(config_path)]

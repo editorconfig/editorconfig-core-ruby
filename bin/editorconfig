@@ -25,6 +25,6 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-EditorConfig.fs_traverse(ARGV[0], **options).each do |key, value|
+EditorConfig.load_file(ARGV[0], **options).each do |key, value|
   puts "#{key}=#{value}"
 end
