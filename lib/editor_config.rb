@@ -83,7 +83,7 @@ module EditorConfig
       case line
       when /\Aroot(\s+)?\=(\s+)?true\Z/
         root = true
-      when /\A\[(?<name>[\/\{\},\*\.[:word:]]+)\]\Z/
+      when /\A\[(?<name>.+)\]\Z/
         # section marker
         last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
         out_hash[last_section] = {}
