@@ -174,4 +174,11 @@ module EditorConfig
 
     config
   end
+
+  def self.fs_traverse(path, config: ".editorconfig")
+    EditorConfig.traverse(path) do |path|
+      config_path = File.join(path, config)
+      File.read(config_path) if File.exist?(config_path)
+    end
+  end
 end

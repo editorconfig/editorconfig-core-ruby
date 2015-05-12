@@ -3,7 +3,9 @@
 require "optparse"
 require "editor_config"
 
-options = {}
+options = {
+  config: ".editorconfig"
+}
 
 OptionParser.new do |opts|
   opts.banner = "Usage: editorconfig [OPTIONS] FILENAME"
@@ -23,11 +25,6 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-config = EditorConfig.traverse(ARGV[0]) do |path|
-  config_path = File.join(path, options[:config] || ".editorconfig")
-  File.read(config_path) if File.exist?(config_path)
-end
-
-config.each do |key, value|
+EditorConfig.fs_traverse(ARGV[0], **options).each do |key, value|
   puts "#{key}=#{value}"
 end
