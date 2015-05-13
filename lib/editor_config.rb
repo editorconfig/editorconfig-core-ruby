@@ -170,10 +170,24 @@ module EditorConfig
   end
 
   def self.preprocess2(config)
-    config = config.dup
+    config = config.reduce({}) { |h, (k, v)| h[k.downcase] = v; h }
+
+    %w( indent_style end_of_line insert_final_newline trim_trailing_whitespace charset ).each do |key|
+      if config.key?(key)
+        config[key] = config[key].downcase
+      end
+    end
 
     if !config.key?("tab_width") && config.key?("indent_size") && config["indent_size"] != "tab"
       config["tab_width"] = config["indent_size"]
+    end
+
+    if !config.key?("indent_size") && config["indent_style"] == "tab"
+      if config.key?("tab_width")
+        config["indent_size"] = config["tab_width"]
+      else
+        config["indent_size"] = "tab"
+      end
     end
 
     config
