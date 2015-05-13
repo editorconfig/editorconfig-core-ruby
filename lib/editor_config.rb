@@ -1,5 +1,4 @@
 require "editor_config/version"
-require "pathname"
 
 module EditorConfig
   INDENT_STYLE             = "indent_style".freeze
@@ -177,18 +176,17 @@ module EditorConfig
   end
 
   def self.load(path, config: ".editorconfig")
-    path = File.join("/", path)
     hash = {}
 
-    Pathname.new(path).dirname.ascend do |subpath|
-      config_path = File.join(subpath, config)
+    traverse(path).each do |subpath|
+      config_path = subpath == "" ? config : "#{subpath}/#{config}"
       config_data = yield config_path
       next unless config_data
 
       ini, root = parse(config_data)
 
       ini.each do |pattern, properties|
-        matcher = File.expand_path(pattern, config_path)
+        matcher = subpath == "" ? pattern : "#{subpath}/#{pattern}"
         if fnmatch?(matcher, path)
           hash = properties.merge(hash)
         end
@@ -200,6 +198,26 @@ module EditorConfig
     end
 
     hash
+  end
+
+  def self.traverse(path)
+    paths = []
+    parts = path.split("/", -1)
+
+    idx = parts.length - 1
+
+    while idx > 0
+      paths << parts[0, idx].join("/")
+      idx -= 1
+    end
+
+    if path.start_with?("/")
+      paths[-1] = "/"
+    else
+      paths << ""
+    end
+
+    paths
   end
 
   def self.load_file(*args)

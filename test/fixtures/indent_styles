@@ -1,0 +1,6 @@
+[space.txt]
+indent_style = space
+indent_size = tab
+
+[tab.txt]
+indent_style = tab
