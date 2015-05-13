@@ -33,6 +33,43 @@ end_of_line=lf
 tab_width=8
 ```
 
+### Load
+
+**File System**
+
+An flattened config can be loaded from the file system with:
+
+``` ruby
+filename = "~/Project/foo/lib/foo.rb"
+config = EditorConfig.load_file(filename)
+
+# config: hash of properties and values
+{
+  "charset" => "utf-8",
+  "indent_style" => "space",
+  "end_of_line" => "lf",
+  "insert_final_newline" => "true"
+}
+```
+
+This API walks up the directory hierarchy gathering all `.editorconfig` files until it reaches a config that defines `root = true`.
+
+**Custom Loader**
+
+A custom loader can be provided to read files from another source rather than the file system.
+
+For an example, you might load files directly from a git repository.
+
+``` ruby
+tree_sha, filename = "348b1ea52f897f313d62c56c2ba785a41f654861", "lib/foo.rb"
+
+config = EditorConfig.load(filename) do |config_path|
+  if blob_sha = `git ls-tree #{tree_sha} #{config_path}`.split(" ")[2]
+    `git cat-file blob #{blob_sha}`
+  end
+end
+```
+
 ### Parse
 
 A low-level API for parsing an individual `.editorconfig` file.

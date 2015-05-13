@@ -176,12 +176,13 @@ module EditorConfig
       File.fnmatch?(pattern, File.basename(path), flags)
   end
 
-  def self.load(path)
+  def self.load(path, config: ".editorconfig")
     path = File.join("/", path)
-    config = {}
+    hash = {}
 
     Pathname.new(path).dirname.ascend do |subpath|
-      config_path, config_data = yield subpath.to_s
+      config_path = File.join(subpath, config)
+      config_data = yield config_path
       next unless config_data
 
       ini, root = parse(config_data)
@@ -189,7 +190,7 @@ module EditorConfig
       ini.each do |pattern, properties|
         matcher = File.expand_path(pattern, config_path)
         if fnmatch?(matcher, path)
-          config = properties.merge(config)
+          hash = properties.merge(hash)
         end
       end
 
@@ -198,15 +199,12 @@ module EditorConfig
       end
     end
 
-    config
+    hash
   end
 
-  def self.load_file(path, config: ".editorconfig")
-    EditorConfig.load(path) do |p|
-      config_path = File.join(p, config)
-      if File.exist?(config_path)
-        [File.dirname(File.expand_path(config_path)), File.read(config_path)]
-      end
+  def self.load_file(*args)
+    EditorConfig.load(*args) do |path|
+      File.read(path) if File.exist?(path)
     end
   end
 end
