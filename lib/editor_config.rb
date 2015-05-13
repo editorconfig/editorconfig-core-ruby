@@ -102,91 +102,32 @@ module EditorConfig
   end
 
   def self.preprocess(config)
-    h = {}
-    config.each do |key, value|
-      v = cast_property(key, value)
-      h[key] = v if !v.nil?
-    end
-    h
-  end
-
-  def self.cast_property(name, value)
-    case name
-    when INDENT_STYLE then cast_indent_style(value)
-    when INDENT_SIZE then cast_indent_size(value)
-    when TAB_WIDTH then cast_integer(value)
-    when END_OF_LINE then cast_eol(value)
-    when CHARSET then cast_charset(value)
-    when TRIM_TRAILING_WHITESPACE then cast_boolean(value)
-    when INSERT_FINAL_NEWLINE then cast_boolean(value)
-    when MAX_LINE_LENGTH then cast_integer(value)
-    end
-  end
-
-  def self.cast_indent_style(value)
-    case value.to_s.downcase
-    when TAB then TAB
-    when SPACE then SPACE
-    end
-  end
-
-  def self.cast_indent_size(value)
-    case value.to_s.downcase
-    when TAB then TAB
-    else cast_integer(value)
-    end
-  end
-
-  def self.cast_integer(value)
-    value = value.to_i
-    if 0 < value && value < 4096
-      value
-    end
-  end
-
-  def self.cast_eol(value)
-    case value.to_s.downcase
-    when LF then LF
-    when CR then CR
-    when CRLF then CRLF
-    end
-  end
-
-  def self.cast_charset(value)
-    case value.to_s.downcase
-    when LATIN1 then LATIN1
-    when UTF_8 then UTF_8
-    when UTF_8_BOM then UTF_8_BOM
-    when UTF_16BE then UTF_16BE
-    when UTF_16LE then UTF_16LE
-    end
-  end
-
-  def self.cast_boolean(value)
-    case value.to_s.downcase
-    when TRUE then true
-    when FALSE then false
-    end
-  end
-
-  def self.preprocess2(config)
     config = config.reduce({}) { |h, (k, v)| h[k.downcase] = v; h }
 
-    %w( indent_style end_of_line insert_final_newline trim_trailing_whitespace charset ).each do |key|
+    [
+      INDENT_STYLE,
+      INDENT_SIZE,
+      TAB_WIDTH,
+      END_OF_LINE,
+      CHARSET,
+      TRIM_TRAILING_WHITESPACE,
+      INSERT_FINAL_NEWLINE,
+      MAX_LINE_LENGTH
+    ].each do |key|
       if config.key?(key)
         config[key] = config[key].downcase
       end
     end
 
-    if !config.key?("tab_width") && config.key?("indent_size") && config["indent_size"] != "tab"
-      config["tab_width"] = config["indent_size"]
+    if !config.key?(TAB_WIDTH) && config.key?(INDENT_SIZE) && config[INDENT_SIZE] != TAB
+      config[TAB_WIDTH] = config[INDENT_SIZE]
     end
 
-    if !config.key?("indent_size") && config["indent_style"] == "tab"
-      if config.key?("tab_width")
-        config["indent_size"] = config["tab_width"]
+    if !config.key?(INDENT_SIZE) && config[INDENT_STYLE] == TAB
+      if config.key?(TAB_WIDTH)
+        config[INDENT_SIZE] = config[TAB_WIDTH]
       else
-        config["indent_size"] = "tab"
+        config[INDENT_SIZE] = TAB
       end
     end
 

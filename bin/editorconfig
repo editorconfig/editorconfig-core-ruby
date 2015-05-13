@@ -26,5 +26,5 @@ OptionParser.new do |opts|
 end.parse!
 
 config = EditorConfig.load_file(ARGV[0], **options)
-config = EditorConfig.preprocess2(config)
+config = EditorConfig.preprocess(config)
 config.each { |k, v| puts "#{k}=#{v}" }

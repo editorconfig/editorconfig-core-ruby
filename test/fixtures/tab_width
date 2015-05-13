@@ -1,7 +1,0 @@
-root = true
-
-[test1]
-tab_width = 4
-
-[test2]
-tab_width = 0
