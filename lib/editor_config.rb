@@ -169,6 +169,16 @@ module EditorConfig
     end
   end
 
+  def self.preprocess2(config)
+    config = config.dup
+
+    if !config.key?("tab_width") && config.key?("indent_size") && config["indent_size"] != "tab"
+      config["tab_width"] = config["indent_size"]
+    end
+
+    config
+  end
+
   def self.fnmatch?(pattern, path)
     flags = File::FNM_PATHNAME | File::FNM_EXTGLOB
     File.fnmatch?(pattern, path, flags) ||
