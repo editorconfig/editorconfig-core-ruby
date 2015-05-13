@@ -79,7 +79,7 @@ module EditorConfig
     last_section = nil
 
     io.each_line do |line|
-      case line
+      case line.chomp
       when /\Aroot(\s+)?\=(\s+)?true\Z/
         root = true
       when /\A\[(?<name>.+)\]\Z/
