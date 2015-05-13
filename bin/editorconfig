@@ -4,7 +4,8 @@ require "optparse"
 require "editor_config"
 
 options = {
-  config: ".editorconfig"
+  config: EditorConfig::CONFIG_FILENAME,
+  version: EditorConfig::SPEC_VERSION
 }
 
 OptionParser.new do |opts|
@@ -12,6 +13,10 @@ OptionParser.new do |opts|
 
   opts.on("-f <name>", "Specify conf filename other than \".editorconfig\"") do |path|
     options[:config] = path
+  end
+
+  opts.on("-b <version>", "Specify version (used by devs to test compatibility)") do |version|
+    options[:version] = version
   end
 
   opts.on("-h", "--help", "Print this help message") do
@@ -26,5 +31,5 @@ OptionParser.new do |opts|
 end.parse!
 
 config = EditorConfig.load_file(ARGV[0], **options)
-config = EditorConfig.preprocess(config)
+config = EditorConfig.preprocess(config, version: options[:version])
 config.each { |k, v| puts "#{k}=#{v}" }

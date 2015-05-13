@@ -1,6 +1,8 @@
 require "editor_config/version"
 
 module EditorConfig
+  CONFIG_FILENAME = ".editorconfig".freeze
+
   INDENT_STYLE             = "indent_style".freeze
   INDENT_SIZE              = "indent_size".freeze
   TAB_WIDTH                = "tab_width".freeze
@@ -69,7 +71,7 @@ module EditorConfig
   #     "charset" => "utf-8"
   #   }
   # }
-  def self.parse(io)
+  def self.parse(io, version: SPEC_VERSION)
     # if !io.force_encoding("UTF-8").valid_encoding?
     #   raise ArgumentError, "editorconfig syntax must be valid UTF-8"
     # end
@@ -101,7 +103,7 @@ module EditorConfig
     return out_hash, root
   end
 
-  def self.preprocess(config)
+  def self.preprocess(config, version: nil)
     config = config.reduce({}) { |h, (k, v)| h[k.downcase] = v; h }
 
     [
@@ -140,7 +142,7 @@ module EditorConfig
       File.fnmatch?(pattern, File.basename(path), flags)
   end
 
-  def self.load(path, config: ".editorconfig")
+  def self.load(path, config: CONFIG_FILENAME, version: SPEC_VERSION)
     hash = {}
 
     traverse(path).each do |subpath|
@@ -148,7 +150,7 @@ module EditorConfig
       config_data = yield config_path
       next unless config_data
 
-      ini, root = parse(config_data)
+      ini, root = parse(config_data, version: version)
 
       ini.each do |pattern, properties|
         matcher = subpath == "" ? pattern : "#{subpath}/#{pattern}"
