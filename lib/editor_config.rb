@@ -103,7 +103,7 @@ module EditorConfig
     return out_hash, root
   end
 
-  def self.preprocess(config, version: nil)
+  def self.preprocess(config, version: SPEC_VERSION)
     config = config.reduce({}) { |h, (k, v)| h[k.downcase] = v; h }
 
     [
@@ -125,11 +125,13 @@ module EditorConfig
       config[TAB_WIDTH] = config[INDENT_SIZE]
     end
 
-    if !config.key?(INDENT_SIZE) && config[INDENT_STYLE] == TAB
-      if config.key?(TAB_WIDTH)
-        config[INDENT_SIZE] = config[TAB_WIDTH]
-      else
-        config[INDENT_SIZE] = TAB
+    if version > "0.9"
+      if !config.key?(INDENT_SIZE) && config[INDENT_STYLE] == TAB
+        if config.key?(TAB_WIDTH)
+          config[INDENT_SIZE] = config[TAB_WIDTH]
+        else
+          config[INDENT_SIZE] = TAB
+        end
       end
     end
 
