@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.summary = "EditorConfig core library written in Ruby"
   s.license = "MIT"
   s.authors = "GitHub"
+  s.homepage = "https://github.com/editorconfig/editorconfig-core-ruby"
 
   s.files = [
     "lib/editor_config.rb",
