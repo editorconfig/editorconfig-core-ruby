@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.authors = "GitHub"
   s.homepage = "https://github.com/editorconfig/editorconfig-core-ruby"
 
+  s.add_development_dependency "minitest", "~> 5.0"
   s.add_development_dependency "rake", "~> 10.0"
 
   s.files = [
