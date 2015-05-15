@@ -156,7 +156,7 @@ module EditorConfig
 
       ini.each do |pattern, properties|
         matcher = subpath == "" ? pattern : "#{subpath}/#{pattern}"
-        if fnmatch?(matcher, path)
+        if fnmatch?(pattern, path) || fnmatch?(matcher, path)
           hash = properties.merge(hash)
         end
       end
