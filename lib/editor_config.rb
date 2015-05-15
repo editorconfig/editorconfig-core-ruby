@@ -28,6 +28,10 @@ module EditorConfig
   UTF_16BE  = "utf-16be".freeze
   UTF_16LE  = "utf-16le".freeze
 
+  # Internal: Default filename to use if path is too long or has too many
+  # components.
+  DEFAULT_FILENAME = "filename".freeze
+
   # Internal: Maximum number of bytes to read per line. Lines over this limit
   # will be truncated.
   MAX_LINE = 200
@@ -39,6 +43,14 @@ module EditorConfig
   # Internal: Maximum byte length of property name String. Names over this limit
   # will be truncated.
   MAX_PROPERTY_NAME = 500
+
+  # Internal: Maximum byte length of filename path. Paths over this limit will
+  # default to global "*" properties.
+  MAX_FILENAME = 4096
+
+  # Internal: Maximum number of directories a filename can have. Paths this
+  # deep will default to global "*" properties.
+  MAX_FILENAME_COMPONENTS = 25
 
   # Public: Parse a `.editorconfig` from a string.
   #
@@ -147,7 +159,15 @@ module EditorConfig
   def self.load(path, config: CONFIG_FILENAME, version: SPEC_VERSION)
     hash = {}
 
-    traverse(path).each do |subpath|
+    # Use default filename if path is too long
+    path = DEFAULT_FILENAME if path.length > MAX_FILENAME
+
+    components = traverse(path)
+
+    # Use default filename if path has too many directories
+    path = DEFAULT_FILENAME if components.length > MAX_FILENAME_COMPONENTS
+
+    components.each do |subpath|
       config_path = subpath == "" ? config : "#{subpath}/#{config}"
       config_data = yield config_path
       next unless config_data
