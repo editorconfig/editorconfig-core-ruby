@@ -80,7 +80,7 @@ module EditorConfig
 
     io.each_line do |line|
       case line.chomp
-      when /\Aroot(\s+)?\=(\s+)?true\Z/
+      when /\Aroot(\s+)?\=(\s+)?true\Z/i
         root = true
       when /\A\[(?<name>.+)\]\Z/
         # section marker
