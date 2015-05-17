@@ -30,6 +30,10 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-config = EditorConfig.load_file(ARGV[0], **options)
-config = EditorConfig.preprocess(config, version: options[:version])
-config.each { |k, v| puts "#{k}=#{v}" }
+ARGV.each do |filename|
+  config = EditorConfig.load_file(filename, **options)
+  config = EditorConfig.preprocess(config, version: options[:version])
+
+  puts "[#{filename}]" if ARGV.length > 1
+  config.each { |k, v| puts "#{k}=#{v}" }
+end

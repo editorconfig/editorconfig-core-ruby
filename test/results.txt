@@ -30,4 +30,3 @@
 	161 - parent_dir_overload_repeat2 (Failed)
 	163 - root_file_mixed_case (Failed)
 	167 - top_level_path_separator (Failed)
-	174 - multiple_files_on_command_line (Failed)
