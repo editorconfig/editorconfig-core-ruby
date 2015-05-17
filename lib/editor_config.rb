@@ -52,37 +52,23 @@ module EditorConfig
   # deep will default to global "*" properties.
   MAX_FILENAME_COMPONENTS = 25
 
-  # Public: Parse a `.editorconfig` from a string.
+  # Public: Parse the contents of an `.editorconfig`.
   #
-  # io - a String containing the contents of a `.editorconfig` file.
+  # io - An IO or String with the raw contents of an `.editorconfig` file.
   #
-  # Returns a hash of sections from the config file. Each section will be a
-  # hash of key/value pairs for that section. The only top-level key that
-  # won't have a Hash value is "root" which if it exists will be set to
-  # `true`.
-  #
-  # Possible key/value pairs for sections are as follows:
-  #   "indent_style"             - :tab, :space or nil.
-  #   "indent_size"              - :tab, an integer between 1-64, or nil.
-  #   "tab_width"                - an integer between 1-64, or nil.
-  #   "end_of_line"              - :lf, :cr, :crlf or nil.
-  #   "charset"                  - "latin1", "utf-8", "utf-8-bom", "utf-16be",
-  #                                "utf-16le" or nil.
-  #   "trim_trailing_whitespace" - true, false or nil.
-  #   "insert_final_newline"     - true, false or nil.
-  #
-  # If either of these keys exist but the value is nil, the key existed in the
-  # editorconfig but it's value was invalid or not supported.
+  # Returns a tuple of a parsed Hash of information and a boolean flag if the
+  # file was marked as "root". The hash contains string keys of each section
+  # of the config file.
   #
   # An example hash would look like this:
   # {
-  #   "root" => true,
   #   "*.rb" => {
-  #     "indent_style" => :space
-  #     "indent_size" => 2,
+  #     "indent_style" => "space",
+  #     "indent_size" => "2",
   #     "charset" => "utf-8"
   #   }
   # }
+  #
   def self.parse(io, version: SPEC_VERSION)
     # if !io.force_encoding("UTF-8").valid_encoding?
     #   raise ArgumentError, "editorconfig syntax must be valid UTF-8"
@@ -177,6 +163,15 @@ module EditorConfig
     # translate(pattern) =~ path ? true : false
   end
 
+  # Public: Load EditorConfig with a custom loader implementation.
+  #
+  # path   - String filename on file system
+  # config - Basename of config to search for (default: .editorconfig)
+  #
+  # loader block
+  #   config_path - String "path/to/.editorconfig" to attempt to read from
+  #
+  # Returns Hash of String properties and values.
   def self.load(path, config: CONFIG_FILENAME, version: SPEC_VERSION)
     hash = {}
 
@@ -235,6 +230,15 @@ module EditorConfig
     paths
   end
 
+  # Public: Load EditorConfig for a specific file.
+  #
+  # Starts at filename and walks up each directory gathering any .editorconfig
+  # files until it reaches a config marked as "root".
+  #
+  # path   - String filename on file system
+  # config - Basename of config to search for (default: .editorconfig)
+  #
+  # Returns Hash of String properties and values.
   def self.load_file(*args)
     EditorConfig.load(*args) do |path|
       File.read(path) if File.exist?(path)
