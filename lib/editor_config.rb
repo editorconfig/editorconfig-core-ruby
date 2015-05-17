@@ -150,10 +150,31 @@ module EditorConfig
     config
   end
 
+  # Public: Test shell pattern against a path.
+  #
+  # Modeled after editorconfig/fnmatch.py.
+  #   https://github.com/editorconfig/editorconfig-core-py/blob/master/editorconfig/fnmatch.py
+  #
+  # pattern - String shell pattern
+  # path    - String pathname
+  #
+  # Returns true if path matches pattern, otherwise false.
   def self.fnmatch?(pattern, path)
     flags = File::FNM_PATHNAME | File::FNM_EXTGLOB
-    File.fnmatch?(pattern, path, flags) ||
-      File.fnmatch?(pattern, File.basename(path), flags)
+    pattern = pattern.dup
+
+    # Expand "**" to match over path separators
+    pattern.gsub!(/\*\*\/?/, "**/*")
+
+    # Escape "{single}"
+    pattern.gsub!(/{(\w+)}/) { "\\{#{$1}\\}" }
+
+    # Escape "{notclosed"
+    pattern.gsub!(/{([^}]+)$/) { "\\{#{$1}" }
+
+    File.fnmatch?(pattern, path, flags)
+
+    # translate(pattern) =~ path ? true : false
   end
 
   def self.load(path, config: CONFIG_FILENAME, version: SPEC_VERSION)
@@ -172,11 +193,16 @@ module EditorConfig
       config_data = yield config_path
       next unless config_data
 
-      ini, root = parse(config_data, version: version)
+      sections, root = parse(config_data, version: version)
 
-      ini.each do |pattern, properties|
-        matcher = subpath == "" ? pattern : "#{subpath}/#{pattern}"
-        if fnmatch?(pattern, path) || fnmatch?(matcher, path)
+      sections.each do |section, properties|
+        if section.include?("/")
+          pattern = subpath == "" ? section : "#{subpath}/#{section}"
+        else
+          pattern = "**/#{section}"
+        end
+
+        if fnmatch?(pattern, path)
           hash = properties.merge(hash)
         end
       end
