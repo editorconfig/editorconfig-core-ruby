@@ -11,6 +11,11 @@ class TestFnmatch < MiniTest::Test
     refute_fnmatch "foo/Makefile", "foo/Makefiler"
     refute_fnmatch "foo/Makefile", "Makefile"
 
+    assert_fnmatch "/top/of/path", "/top/of/path"
+    refute_fnmatch "/top/of/path", "top/of/path"
+    assert_fnmatch "top/of/path", "top/of/path"
+    refute_fnmatch "top/of/path", "/top/of/path"
+
     assert_fnmatch "*", "README"
     assert_fnmatch "*", "README.txt"
     assert_fnmatch "*", "README.md"

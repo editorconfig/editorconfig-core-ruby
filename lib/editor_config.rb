@@ -192,6 +192,7 @@ module EditorConfig
 
       sections.each do |section, properties|
         if section.include?("/")
+          section = section[1..-1] if section[0] == "/"
           pattern = subpath == "" ? section : "#{subpath}/#{section}"
         else
           pattern = "**/#{section}"
