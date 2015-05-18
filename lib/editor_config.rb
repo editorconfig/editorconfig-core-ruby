@@ -79,7 +79,7 @@ module EditorConfig
     last_section = nil
 
     io.each_line do |line|
-      line = line.sub(/\s+;.+$/, "").chomp
+      line = line.sub(/\s+(;|#).+$/, "").chomp
       case line
       when /\Aroot(\s+)?\=(\s+)?true\Z/i
         root = true

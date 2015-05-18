@@ -110,6 +110,7 @@ class TestParse < MiniTest::Test
       "test6.c" => { "key" => "value \\; not comment"},
       "test\\;.c" => { "key" => "value" },
       "test7.c" => { "key" => "value" },
+      "test8.c" => { "key" => "value" },
       "test9.c" => { "key" => "value"},
       "test10.c" => { "key1" => "value1", "key2" => "value2" },
       "test11.c" => { "key" => "value# not comment" },
