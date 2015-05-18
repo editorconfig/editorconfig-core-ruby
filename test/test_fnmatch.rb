@@ -79,6 +79,8 @@ class TestFnmatch < MiniTest::Test
 
     assert_fnmatch "{.f", "{.f"
     refute_fnmatch "{.f", ".f"
+    assert_fnmatch "{}.c", "{}.c"
+    refute_fnmatch "{}.c", ".c"
 
     assert_fnmatch "{package.json,.travis.yml}", "package.json"
     assert_fnmatch "{package.json,.travis.yml}", ".travis.yml"
@@ -123,6 +125,34 @@ class TestFnmatch < MiniTest::Test
     # assert_fnmatch "ab[e/]cd.i", "ab[e/]cd.i"
     # refute_fnmatch "ab[e/]cd.i", "ab/cd.i"
     # refute_fnmatch "ab[e/]cd.i", "abecd.i"
+
+    assert_fnmatch "a**z.c", "a/z.c"
+    assert_fnmatch "a**z.c", "amnz.c"
+    assert_fnmatch "a**z.c", "am/nz.c"
+    assert_fnmatch "a**z.c", "a/mnz.c"
+    assert_fnmatch "a**z.c", "amn/z.c"
+    assert_fnmatch "a**z.c", "a/mn/z.c"
+
+    assert_fnmatch "b/**z.c", "b/z.c"
+    assert_fnmatch "b/**z.c", "b/mnz.c"
+    assert_fnmatch "b/**z.c", "b/mn/z.c"
+    refute_fnmatch "b/**z.c", "bmnz.c"
+    refute_fnmatch "b/**z.c", "bm/nz.c"
+    refute_fnmatch "b/**z.c", "bmn/z.c"
+
+    assert_fnmatch "c**/z.c", "c/z.c"
+    assert_fnmatch "c**/z.c", "cmn/z.c"
+    assert_fnmatch "c**/z.c", "c/mn/z.c"
+    refute_fnmatch "c**/z.c", "cmnz.c"
+    refute_fnmatch "c**/z.c", "cm/nz.c"
+    refute_fnmatch "c**/z.c", "c/mnz.c"
+
+    assert_fnmatch "d/**/z.c", "d/z.c"
+    assert_fnmatch "d/**/z.c", "d/mn/z.c"
+    refute_fnmatch "d/**/z.c", "dmnz.c"
+    refute_fnmatch "d/**/z.c", "dm/nz.c"
+    refute_fnmatch "d/**/z.c", "d/mnz.c"
+    refute_fnmatch "d/**/z.c", "dmn/z.c"
   end
 
   def assert_fnmatch(pattern, path)

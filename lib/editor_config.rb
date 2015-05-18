@@ -150,18 +150,22 @@ module EditorConfig
     flags = File::FNM_PATHNAME | File::FNM_EXTGLOB
     pattern = pattern.dup
 
-    # Expand "**" to match over path separators
-    pattern.gsub!(/\*\*\/?/, "**/*")
-
-    # Escape "{single}"
-    pattern.gsub!(/{(\w+)}/) { "\\{#{$1}\\}" }
+    # Escape "{single}" or "{}"
+    pattern.gsub!(/{(\w*)}/) { "\\{#{$1}\\}" }
 
     # Escape "{notclosed"
     pattern.gsub!(/{([^}]+)$/) { "\\{#{$1}" }
 
-    File.fnmatch?(pattern, path, flags)
+    patterns = []
 
-    # translate(pattern) =~ path ? true : false
+    # Expand "**" to match over path separators
+    # TODO: Optimize the number of patterns we need
+    patterns << pattern.gsub(/\/\*\*/, "/**/*")
+    patterns << pattern.gsub(/\/\*\*/, "")
+    patterns << pattern.gsub(/\*\*/, "**/*")
+    patterns << pattern.gsub(/\*\*/, "/**/*")
+
+    patterns.any? { |p| File.fnmatch?(p, path, flags) }
   end
 
   # Public: Load EditorConfig with a custom loader implementation.
