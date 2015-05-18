@@ -99,24 +99,38 @@ class TestParse < MiniTest::Test
     ], EditorConfig.parse(StringIO.new(fixture(:sample))))
   end
 
-  def test_parse_whitespace
-    config, _ = EditorConfig.parse(fixture(:whitespace))
+  def test_parse_basic
+    config, _ = EditorConfig.parse(fixture(:basic))
     assert_equal({
-      "test1.c" => { "key" => "value" },
-      "test2.c" => { "key" => "value" },
-      "test3.c" => { "key" => "value" },
-      "test4.c" => { "key" => "value" },
-      "test5.c" => { "key" => "value" },
-      "test6.c" => { "key1" => "value1", "key2" => "value2" },
-      " test 7 " => { "key" => "value" },
-      "test8.c" => { "key" => "value" },
-      "test9.c" => { "key" => "value" },
-      "test10.c" => { "key1" => "value1", "key2" => "value2", "key3" => "value3" },
-      "test1.d" => { "key" => "value" },
-      "test2.d" => { "key" => "value" },
-      "test3.d" => { "key" => "value" },
-      "test4.d" => { "key" => "value" },
-      "test5.d" => { "key" => "value" }
+      "*.a" => {
+        "option1" => "value1",
+        "option2" => "value2"
+      },
+      "*.b" => {
+        "option1" => "c",
+        "option2" => "a"
+      },
+      "b.b" => {
+        "option2" => "b"
+      }
+    }, config)
+  end
+
+  def test_parse_bom
+    config, _ = EditorConfig.parse(fixture(:bom))
+    assert_equal({
+      "*" => {
+        "key" => "value"
+      }
+    }, config)
+  end
+
+  def test_parse_crlf
+    config, _ = EditorConfig.parse(fixture(:crlf))
+    assert_equal({
+      "*" => {
+        "key" => "value"
+      }
     }, config)
   end
 
@@ -137,6 +151,27 @@ class TestParse < MiniTest::Test
       "test11.c" => { "key" => "value# not comment" },
       "test12.c" => {"key" => "value \\# not comment" },
       "test\\#.c" => { "key" => "value" }
+    }, config)
+  end
+
+  def test_parse_whitespace
+    config, _ = EditorConfig.parse(fixture(:whitespace))
+    assert_equal({
+      "test1.c" => { "key" => "value" },
+      "test2.c" => { "key" => "value" },
+      "test3.c" => { "key" => "value" },
+      "test4.c" => { "key" => "value" },
+      "test5.c" => { "key" => "value" },
+      "test6.c" => { "key1" => "value1", "key2" => "value2" },
+      " test 7 " => { "key" => "value" },
+      "test8.c" => { "key" => "value" },
+      "test9.c" => { "key" => "value" },
+      "test10.c" => { "key1" => "value1", "key2" => "value2", "key3" => "value3" },
+      "test1.d" => { "key" => "value" },
+      "test2.d" => { "key" => "value" },
+      "test3.d" => { "key" => "value" },
+      "test4.d" => { "key" => "value" },
+      "test5.d" => { "key" => "value" }
     }, config)
   end
 

@@ -14,4 +14,3 @@
 	106 - star_star_over_separator17 (Failed)
 	107 - star_star_over_separator18 (Failed)
 	112 - star_star_over_separator23 (Failed)
-	124 - repeat_sections (Failed)

@@ -86,7 +86,7 @@ module EditorConfig
       when /\A\s*\[(?<name>.+)\]\s*\Z/
         # section marker
         last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
-        out_hash[last_section] = {}
+        out_hash[last_section] ||= {}
       when /\A\s*(?<name>[[:word:]]+)\s*(\=|:)\s*(?<value>.+)\s*\Z/
         match = Regexp.last_match
         name, value = match[:name][0, MAX_PROPERTY_NAME].strip, match[:value].strip
