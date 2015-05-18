@@ -4,7 +4,7 @@ require "stringio"
 
 class TestParse < MiniTest::Test
   def fixture(name)
-    path = File.join(__dir__, "fixtures/#{name}")
+    path = File.join(__dir__, "fixtures/#{name}.in")
     File.read(path)
   end
 
@@ -39,7 +39,7 @@ class TestParse < MiniTest::Test
   end
 
   def test_parse_example_file_io
-    path = File.join(__dir__, "fixtures/sample")
+    path = File.join(__dir__, "fixtures/sample.in")
     assert_equal([
       {
         "*" => {

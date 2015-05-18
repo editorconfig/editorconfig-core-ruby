@@ -3,7 +3,7 @@ require "editor_config"
 
 class TestLoad < MiniTest::Test
   def fixture(name)
-    path = File.join(__dir__, "fixtures/#{name}")
+    path = File.join(__dir__, "fixtures/#{name}.in")
     File.read(path)
   end
 
