@@ -79,7 +79,8 @@ module EditorConfig
     last_section = nil
 
     io.each_line do |line|
-      case line.chomp
+      line = line.sub(/\s+;.+$/, "").chomp
+      case line
       when /\Aroot(\s+)?\=(\s+)?true\Z/i
         root = true
       when /\A\[(?<name>.+)\]\Z/

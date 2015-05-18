@@ -99,6 +99,25 @@ class TestParse < MiniTest::Test
     ], EditorConfig.parse(StringIO.new(fixture(:sample))))
   end
 
+  def test_parse_comments
+    config, _ = EditorConfig.parse(fixture(:comments))
+    assert_equal({
+      "test1.c" => { "key" => "value" },
+      "test2.c" => { "key" => "value" },
+      "test3.c" => { "key" => "value" },
+      "test4.c" => { "key1" => "value1", "key2" => "value2" },
+      "test5.c" => { "key" => "value; not comment" },
+      "test6.c" => { "key" => "value \\; not comment"},
+      "test\\;.c" => { "key" => "value" },
+      "test7.c" => { "key" => "value" },
+      "test9.c" => { "key" => "value"},
+      "test10.c" => { "key1" => "value1", "key2" => "value2" },
+      "test11.c" => { "key" => "value# not comment" },
+      "test12.c" => {"key" => "value \\# not comment" },
+      "test\\#.c" => { "key" => "value" }
+    }, config)
+  end
+
   def test_parse_max_section_name
     config, _ = EditorConfig.parse(fixture(:max_section_name))
     assert_equal [
