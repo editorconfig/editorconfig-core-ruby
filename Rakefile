@@ -15,8 +15,7 @@ namespace :test do
 
     cd "test/core-test"
     sh "cmake -DEDITORCONFIG_CMD=editorconfig ."
-    # sh "ctest ."
-    sh  "ctest . | grep \" (Failed)\" | tee ../results.txt && exit 0"
+    sh "ctest ."
   end
 end
 
