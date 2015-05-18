@@ -15,7 +15,6 @@
 	107 - star_star_over_separator18 (Failed)
 	112 - star_star_over_separator23 (Failed)
 	124 - repeat_sections (Failed)
-	125 - basic_cascade (Failed)
 	129 - spaces_before_property_name (Failed)
 	133 - spaces_before_section_name (Failed)
 	134 - spaces_after_section_name (Failed)
@@ -27,4 +26,3 @@
 	140 - colon_sep_spaces_after_property_value (Failed)
 	142 - comments_after_section (Failed)
 	149 - octothorpe_comments_after_section (Failed)
-	161 - parent_dir_overload_repeat2 (Failed)

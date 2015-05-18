@@ -189,6 +189,7 @@ module EditorConfig
       next unless config_data
 
       sections, root = parse(config_data, version: version)
+      section_properties = {}
 
       sections.each do |section, properties|
         if section.include?("/")
@@ -199,9 +200,11 @@ module EditorConfig
         end
 
         if fnmatch?(pattern, path)
-          hash = properties.merge(hash)
+          section_properties.merge!(properties)
         end
       end
+
+      hash = section_properties.merge(hash)
 
       if root
         break
