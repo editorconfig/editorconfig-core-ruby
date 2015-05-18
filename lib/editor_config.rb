@@ -156,6 +156,9 @@ module EditorConfig
     # Escape "{notclosed"
     pattern.gsub!(/{([^}]+)$/) { "\\{#{$1}" }
 
+    # Numeric ranges
+    pattern.gsub!(/{(\d+)\.\.(\d+)}/) { "{#{($1.to_i..$2.to_i).to_a.join(",")}}" }
+
     patterns = []
 
     # Expand "**" to match over path separators

@@ -2,7 +2,3 @@
 	 25 - brackets_slash_inside3 (Failed)
 	 49 - braces_closing_in_beginning (Failed)
 	 50 - braces_unmatched1 (Failed)
-	 77 - braces_numeric_range2 (Failed)
-	 78 - braces_numeric_range3 (Failed)
-	 79 - braces_numeric_range4 (Failed)
-	 81 - braces_numeric_range6 (Failed)

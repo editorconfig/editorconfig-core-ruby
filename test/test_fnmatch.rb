@@ -122,6 +122,15 @@ class TestFnmatch < MiniTest::Test
     refute_fnmatch "[!ab]].g", "a].g"
     refute_fnmatch "[!ab]].g", "b].g"
 
+    assert_fnmatch "{3..120}", "3"
+    assert_fnmatch "{3..120}", "15"
+    assert_fnmatch "{3..120}", "60"
+    assert_fnmatch "{3..120}", "120"
+    refute_fnmatch "{3..120}", "1"
+    refute_fnmatch "{3..120}", "5a"
+    refute_fnmatch "{3..120}", "121"
+    refute_fnmatch "{3..120}", "060"
+
     # assert_fnmatch "ab[e/]cd.i", "ab[e/]cd.i"
     # refute_fnmatch "ab[e/]cd.i", "ab/cd.i"
     # refute_fnmatch "ab[e/]cd.i", "abecd.i"
