@@ -1,8 +1,12 @@
 require "editor_config/version"
 
 module EditorConfig
+  # Public: Default config basename.
   CONFIG_FILENAME = ".editorconfig".freeze
 
+  # Public: Universal property names.
+  #
+  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
   INDENT_STYLE             = "indent_style".freeze
   INDENT_SIZE              = "indent_size".freeze
   TAB_WIDTH                = "tab_width".freeze
@@ -12,16 +16,28 @@ module EditorConfig
   INSERT_FINAL_NEWLINE     = "insert_final_newline".freeze
   MAX_LINE_LENGTH          = "max_line_length".freeze
 
+  # Public: Possible boolean values.
+  #
+  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
   TRUE  = "true".freeze
   FALSE = "false".freeze
 
+  # Public: Possible indent style values.
+  #
+  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#indent_style
   SPACE = "space".freeze
   TAB   = "tab".freeze
 
+  # Public: Possible EOL values.
+  #
+  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#end_of_line
   CR   = "cr".freeze
   LF   = "lf".freeze
   CRLF = "crlf".freeze
 
+  # Public: Possible charset values.
+  #
+  # https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#charset
   LATIN1    = "latin1".freeze
   UTF_8     = "utf-8".freeze
   UTF_8_BOM = "utf-8-bom".freeze
@@ -70,12 +86,7 @@ module EditorConfig
   # }
   #
   def self.parse(io, version: SPEC_VERSION)
-    # if !io.force_encoding("UTF-8").valid_encoding?
-    #   raise ArgumentError, "editorconfig syntax must be valid UTF-8"
-    # end
-
-    root = false
-    out_hash = {}
+    config, root = {}, false
     last_section = nil
 
     io.each_line do |line|
@@ -86,22 +97,23 @@ module EditorConfig
       when /\A\s*\[(?<name>.+)\]\s*\Z/
         # section marker
         last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
-        out_hash[last_section] ||= {}
+        config[last_section] ||= {}
       when /\A\s*(?<name>[[:word:]]+)\s*(\=|:)\s*(?<value>.+)\s*\Z/
         match = Regexp.last_match
         name, value = match[:name][0, MAX_PROPERTY_NAME].strip, match[:value].strip
-
-        if last_section
-          out_hash[last_section][name] = value
-        else
-          out_hash[name] = value
-        end
+        config[last_section][name] = value if last_section
       end
     end
 
-    return out_hash, root
+    return config, root
   end
 
+  # Public: Normalize known universal properties.
+  #
+  # config  - Hash configuration
+  # version - String spec version
+  #
+  # Returns new preprocessed Hash.
   def self.preprocess(config, version: SPEC_VERSION)
     config = config.reduce({}) { |h, (k, v)| h[k.downcase] = v; h }
 
@@ -137,6 +149,7 @@ module EditorConfig
     config
   end
 
+  # Internal: Temporary replacement constants used within fnmatch.
   FNMATCH_ESCAPED_LBRACE = "FNMATCH-ESCAPED-LBRACE".freeze
   FNMATCH_ESCAPED_RBRACE = "FNMATCH-ESCAPED-RBRACE".freeze
 
@@ -246,6 +259,11 @@ module EditorConfig
     hash
   end
 
+  # Internal: Generate subpaths for given path walking upwards to the root.
+  #
+  # path - String pathname
+  #
+  # Returns an Array of String paths.
   def self.traverse(path)
     paths = []
     parts = path.split("/", -1)
