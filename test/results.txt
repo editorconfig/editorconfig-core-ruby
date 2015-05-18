@@ -1,3 +1,2 @@
 	 24 - brackets_slash_inside2 (Failed)
 	 25 - brackets_slash_inside3 (Failed)
-	 49 - braces_closing_in_beginning (Failed)

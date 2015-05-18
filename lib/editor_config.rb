@@ -159,6 +159,9 @@ module EditorConfig
     pattern.gsub!(/(\{[^}]+$)/) {
       $1.gsub("{", FNMATCH_ESCAPED_LBRACE)
     }
+    pattern.gsub!(/^([^\{]+\})/) {
+      $1.gsub("}", FNMATCH_ESCAPED_RBRACE)
+    }
 
     pattern.gsub!(/(\{(.*)\})/) {
       bracket = $1

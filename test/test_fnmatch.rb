@@ -112,6 +112,8 @@ class TestFnmatch < MiniTest::Test
     refute_fnmatch "{{,b,c{d}.i", "c{d.i"
     refute_fnmatch "{{,b,c{d}.i", ".i"
 
+    assert_fnmatch "{},b}.h", "{},b}.h"
+
     assert_fnmatch "{package.json,.travis.yml}", "package.json"
     assert_fnmatch "{package.json,.travis.yml}", ".travis.yml"
     refute_fnmatch "{package.json,.travis.yml}", "foo/package.json"
