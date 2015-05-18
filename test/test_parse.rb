@@ -99,6 +99,27 @@ class TestParse < MiniTest::Test
     ], EditorConfig.parse(StringIO.new(fixture(:sample))))
   end
 
+  def test_parse_whitespace
+    config, _ = EditorConfig.parse(fixture(:whitespace))
+    assert_equal({
+      "test1.c" => { "key" => "value" },
+      "test2.c" => { "key" => "value" },
+      "test3.c" => { "key" => "value" },
+      "test4.c" => { "key" => "value" },
+      "test5.c" => { "key" => "value" },
+      "test6.c" => { "key1" => "value1", "key2" => "value2" },
+      " test 7 " => { "key" => "value" },
+      "test8.c" => { "key" => "value" },
+      "test9.c" => { "key" => "value" },
+      "test10.c" => { "key1" => "value1", "key2" => "value2", "key3" => "value3" },
+      "test1.d" => { "key" => "value" },
+      "test2.d" => { "key" => "value" },
+      "test3.d" => { "key" => "value" },
+      "test4.d" => { "key" => "value" },
+      "test5.d" => { "key" => "value" }
+    }, config)
+  end
+
   def test_parse_comments
     config, _ = EditorConfig.parse(fixture(:comments))
     assert_equal({
