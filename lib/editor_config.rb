@@ -137,6 +137,9 @@ module EditorConfig
     config
   end
 
+  FNMATCH_ESCAPED_LBRACE = "FNMATCH-ESCAPED-LBRACE".freeze
+  FNMATCH_ESCAPED_RBRACE = "FNMATCH-ESCAPED-RBRACE".freeze
+
   # Public: Test shell pattern against a path.
   #
   # Modeled after editorconfig/fnmatch.py.
@@ -150,14 +153,28 @@ module EditorConfig
     flags = File::FNM_PATHNAME | File::FNM_EXTGLOB
     pattern = pattern.dup
 
-    # Escape "{single}" or "{}"
-    pattern.gsub!(/{(\w*)}/) { "\\{#{$1}\\}" }
+    pattern.gsub!(/(\{\w*\})/) {
+      $1.gsub("{", FNMATCH_ESCAPED_LBRACE).gsub("}", FNMATCH_ESCAPED_RBRACE)
+    }
+    pattern.gsub!(/(\{[^}]+$)/) {
+      $1.gsub("{", FNMATCH_ESCAPED_LBRACE)
+    }
 
-    # Escape "{notclosed"
-    pattern.gsub!(/{([^}]+)$/) { "\\{#{$1}" }
+    pattern.gsub!(/(\{(.*)\})/) {
+      bracket = $1
+      inner = $2
 
-    # Numeric ranges
-    pattern.gsub!(/{(\d+)\.\.(\d+)}/) { "{#{($1.to_i..$2.to_i).to_a.join(",")}}" }
+      if inner =~ /^(\d+)\.\.(\d+)$/
+        "{#{($1.to_i..$2.to_i).to_a.join(",")}}"
+      elsif inner.include?(",")
+        bracket
+      else
+        "#{FNMATCH_ESCAPED_LBRACE}#{inner}#{FNMATCH_ESCAPED_RBRACE}"
+      end
+    }
+
+    pattern.gsub!(FNMATCH_ESCAPED_LBRACE, "\\{")
+    pattern.gsub!(FNMATCH_ESCAPED_RBRACE, "\\}")
 
     patterns = []
 
