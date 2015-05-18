@@ -1,2 +1,0 @@
-	 24 - brackets_slash_inside2 (Failed)
-	 25 - brackets_slash_inside3 (Failed)

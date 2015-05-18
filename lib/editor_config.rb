@@ -179,6 +179,10 @@ module EditorConfig
     pattern.gsub!(FNMATCH_ESCAPED_LBRACE, "\\{")
     pattern.gsub!(FNMATCH_ESCAPED_RBRACE, "\\}")
 
+    pattern.gsub!(/\[(.*\/.*)\]/) {
+      "\\[#{$1}\\]"
+    }
+
     patterns = []
 
     # Expand "**" to match over path separators
