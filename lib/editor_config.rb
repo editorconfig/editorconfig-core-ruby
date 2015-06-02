@@ -56,10 +56,6 @@ module EditorConfig
   # will be truncated.
   MAX_SECTION_NAME = 500
 
-  # Internal: Maximum byte length of property name String. Names over this limit
-  # will be truncated.
-  MAX_PROPERTY_NAME = 500
-
   # Internal: Maximum byte length of filename path. Paths over this limit will
   # default to global "*" properties.
   MAX_FILENAME = 4096
@@ -98,9 +94,9 @@ module EditorConfig
         # section marker
         last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
         config[last_section] ||= {}
-      when /\A\s*(?<name>[[:word:]]+)\s*(\=|:)\s*(?<value>.+)\s*\Z/
+      when /\A\s*(?<name>[[:word:]]{1,50})\s*(\=|:)\s*(?<value>.{1,255})\s*\Z/
         match = Regexp.last_match
-        name, value = match[:name][0, MAX_PROPERTY_NAME].strip, match[:value].strip
+        name, value = match[:name].strip, match[:value].strip
         config[last_section][name] = value if last_section
       end
     end
