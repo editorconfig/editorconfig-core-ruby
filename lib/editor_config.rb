@@ -48,14 +48,6 @@ module EditorConfig
   # components.
   DEFAULT_FILENAME = "filename".freeze
 
-  # Internal: Maximum number of bytes to read per line. Lines over this limit
-  # will be truncated.
-  MAX_LINE = 200
-
-  # Internal: Maximum byte length of section name Strings. Names over this limit
-  # will be truncated.
-  MAX_SECTION_NAME = 500
-
   # Internal: Maximum byte length of filename path. Paths over this limit will
   # default to global "*" properties.
   MAX_FILENAME = 4096
@@ -90,9 +82,9 @@ module EditorConfig
       case line
       when /\Aroot(\s+)?\=(\s+)?true\Z/i
         root = true
-      when /\A\s*\[(?<name>.+)\]\s*\Z/
+      when /\A\s*\[(?<name>.{1,4096})\]\s*\Z/
         # section marker
-        last_section = Regexp.last_match[:name][0, MAX_SECTION_NAME]
+        last_section = Regexp.last_match[:name]
         config[last_section] ||= {}
       when /\A\s*(?<name>[[:word:]]{1,50})\s*(\=|:)\s*(?<value>.{1,255})\s*\Z/
         match = Regexp.last_match
