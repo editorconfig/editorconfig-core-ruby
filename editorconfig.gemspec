@@ -15,10 +15,7 @@ Gem::Specification.new do |s|
     "lib/editor_config.rb",
     "lib/editor_config/version.rb",
     "lib/editorconfig.rb",
-    "bin/editorconfig",
     "README.md",
     "LICENSE.md"
   ]
-
-  s.executables << "editorconfig"
 end
