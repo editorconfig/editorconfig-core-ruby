@@ -1,5 +1,6 @@
 # EditorConfig Ruby Core
 [![Build Status](https://travis-ci.org/editorconfig/editorconfig-core-ruby.svg?branch=master)](https://travis-ci.org/editorconfig/editorconfig-core-ruby)
+[![Coverage Status](https://coveralls.io/repos/github/editorconfig/editorconfig-core-ruby/badge.svg?branch=master)](https://coveralls.io/github/editorconfig/editorconfig-core-ruby)
 
 EditorConfig Ruby Core provides the same functionality as the [EditorConfig C Core](https://github.com/editorconfig/editorconfig-core-c) and [EditorConfig Python Core](https://github.com/editorconfig/editorconfig-core-py) libraries.
 
